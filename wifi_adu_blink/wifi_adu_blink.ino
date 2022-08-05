@@ -28,7 +28,6 @@ void loop(){
   
   if(rd =='a')
     tp = 'a';
-    //Serial.write('a');
   if(rd =='b')
     tp = 'b';
   

@@ -1,6 +1,5 @@
 
 #include <ESP8266WiFi.h>
-#include <Ticker.h> //Ticker Library
 
 #ifndef STASSID
 #define STASSID "pengsu_2g"
@@ -15,12 +14,9 @@ const char* password = STAPSK;
 const char* host = "192.168.35.155";
 const uint16_t port = 7000;
 WiFiClient client;
-Ticker blinker;
   
 void setup() {
   Serial.begin(9600);
-
-  // We start by connecting to a WiFi network
 
   Serial.println();
   Serial.println();
@@ -34,8 +30,8 @@ void setup() {
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(1);
+//    delay(500);
+//    Serial.print(1);
   }
 
 //   if(client.connected()){// 타임인터럽트 
@@ -65,39 +61,35 @@ void loop() {
 
  
   // wait for data to be available 데이터기다리는거구 
-//  unsigned long timeout = millis();
-//  while (client.available() == 0) {
-//    if (millis() - timeout > 5000) {
-//      Serial.println(">>> Client Timeout !");
-//      client.stop();
-//      delay(10000); //ms 
-//      return;
-//    }
-//  }
-
-//  if (client.connected()){
-//    client.println("timer interrupt");
-//  }
-
-  char buf[1024];
-  int nread;
-  while (client.available()) {
-    nread = client.read(buf, 1024);
-    Serial.write(buf, nread);
-    
+  unsigned long timeout = millis();
+  while (client.available() == 0) {
+    if (millis() - timeout > 5000) {
+      Serial.println(">>> Client Timeout !");
+      client.stop();
+      delay(10000); //ms 
+      return;
+    }
   }
 
-  //Serial.println();
+  if (client.connected()){
+    client.println("hello, It's esp01");
+  }
+
+  // Read all the lines of the reply from server and print them to Serial
+  Serial.println("receiving from remote server");
+  // not testing 'client.connected()' since we do not need to send data here
+  while (client.available() && client.availableForWrite()) {
+    char ch = static_cast<char>(client.read());
+    Serial.print(ch);
+    client.write(ch);
+  }
+
 //  Serial.flush();
 //  client.flush();
   client.stop();
 
-//  if (wait) {
-//    delay(300000); // execute once every 5 minutes, don't flood remote service 5분에 한번씩 
-//  }
+  if (wait) {
+    delay(300000); // execute once every 5 minutes, don't flood remote service 5분에 한번씩 
+  }
   wait = true;
-}
-
-void send_msg(){
-  client.println("timer interrupt");
 }
