@@ -3,8 +3,8 @@
 #include <Ticker.h> //Ticker Library
 
 #ifndef STASSID
-#define STASSID "bindsoft"
-#define STAPSK  "88088808"
+#define STASSID "pengsu_2g"
+#define STAPSK  "remainer1!"
 #endif
 
 
@@ -12,13 +12,13 @@
 const char* ssid     = STASSID;
 const char* password = STAPSK;
 
-const char* host = "10.10.11.62";
+const char* host = "192.168.35.155";
 const uint16_t port = 7000;
 WiFiClient client;
 Ticker blinker;
   
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   // We start by connecting to a WiFi network
 
@@ -35,7 +35,7 @@ void setup() {
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    Serial.print(".");
+    Serial.print(1);
   }
 
 //   if(client.connected()){// 타임인터럽트 
@@ -45,8 +45,8 @@ void setup() {
 //  }
 
   Serial.println("");
-//  Serial.println("WiFi connected");
-//  Serial.println("IP address: ");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
   
  
@@ -58,28 +58,26 @@ void loop() {
 
   //연결 tcp 
   if (!client.connect(host, port)) { 
-    //Srial.println("connection failed");
-    client.println("!client.connect ");
+    Serial.println("connection failed");
     delay(5000);
     return;
   }
 
  
   // wait for data to be available 데이터기다리는거구 
-  unsigned long timeout = millis();
-  while (client.available() == 0) {
-    if (millis() - timeout > 5000) {
-      Serial.println(">>> Client Timeout !");
-      //client.println("client.available > 0");
-      client.stop();
-      delay(10000); //ms 
-      return;
-    }
-  }
+//  unsigned long timeout = millis();
+//  while (client.available() == 0) {
+//    if (millis() - timeout > 5000) {
+//      Serial.println(">>> Client Timeout !");
+//      client.stop();
+//      delay(10000); //ms 
+//      return;
+//    }
+//  }
 
-  if (client.connected()){
-    client.println("timer interrupt");
-  }
+//  if (client.connected()){
+//    client.println("timer interrupt");
+//  }
 
   char buf[1024];
   int nread;
